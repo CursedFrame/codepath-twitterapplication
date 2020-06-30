@@ -42,6 +42,7 @@ ext {
     appCompatVersion = '1.0.0'
     designSupportVersion = '1.0.0'
     recyclerViewVersion = '1.0.0'
+    roomVersion = "2.1.0"
 }
 
 dependencies {
@@ -71,4 +72,7 @@ dependencies {
     // Vector drawables library
     implementation "androidx.vectordrawable:vectordrawable:1.1.0" // VectorDrawableCompat
     implementation "androidx.vectordrawable:vectordrawable-animated:1.1.0" // AnimatedVectorDrawableCompat
+    // Room for simple persistence with an ORM
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
 }

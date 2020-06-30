@@ -8,6 +8,16 @@
     android:layout_height="match_parent"
     tools:context=".activities.TimelineActivity">
 
+    <androidx.appcompat.widget.Toolbar
+
+        android:id="@+id/tbMain"
+        android:layout_width="match_parent"
+        android:background="@color/design_default_color_primary_dark"
+        android:layout_height="wrap_content"
+        app:menu="@menu/menu_main">
+
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
         android:id="@+id/scRefresh"
