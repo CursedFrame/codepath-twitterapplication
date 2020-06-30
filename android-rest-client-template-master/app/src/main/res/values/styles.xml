@@ -6,11 +6,32 @@
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
         -->
+
+
+
+
     </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+
+    <style name="Theme.App.Base" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#d32f2f</item>
+        <item name="colorControlActivated">#ff5722</item>
+        <item name="colorControlHighlight">#f44336</item>
+    </style>
+
+    <style name="counterText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">#000000</item>
+        <item name="android:textColor">#d1d1e0</item>
+    </style>
+
+    <style name="counterOverride" parent="Theme.AppCompat.Light.DarkActionBar">
+
+        <item name="android:textColor">#ff0000</item>
+    </style>
+
 
 </resources>
