@@ -52,4 +52,7 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.1'
     // SwipeRefreshLayout for swiping to refresh data
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    // Parceler library for parceling data
+    implementation 'org.parceler:parceler-api:1.1.12'
+    annotationProcessor 'org.parceler:parceler:1.1.12'
 }
