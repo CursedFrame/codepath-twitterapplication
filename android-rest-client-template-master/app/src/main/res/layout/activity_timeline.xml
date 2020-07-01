@@ -12,8 +12,10 @@
 
         android:id="@+id/tbMain"
         android:layout_width="match_parent"
-        android:background="@color/design_default_color_primary_dark"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/twitter_blue_30"
         app:menu="@menu/menu_main">
 
     </androidx.appcompat.widget.Toolbar>

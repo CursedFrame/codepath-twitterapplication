@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.content.Context;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.ParseException;
 import android.os.Build;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.activities.ComposeActivity;
 
 import java.util.List;
 import java.util.Locale;
@@ -78,10 +80,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         // Define Views within each Tweet
         ImageView ivProfileImage;
         ImageView ivTweetImage;
+        ImageView ivRetweet;
+        ImageView ivLike;
+        ImageView ivReply;
         TextView tvTweetText;
         TextView tvUserName;
         TextView tvTimeStamp;
         TextView tvName;
+
 
         // ViewHolder constructor
         public ViewHolder(@NonNull View itemView) {
@@ -92,17 +98,21 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivTweetImage =  itemView.findViewById(R.id.ivTweetImage);
             tvTweetText = itemView.findViewById(R.id.tvTweetText);
             tvTimeStamp = itemView.findViewById(R.id.tvTimeStamp);
-
+            ivRetweet = itemView.findViewById(R.id.ivRetweet);
+            ivLike = itemView.findViewById(R.id.ivLike);
+            ivReply = itemView.findViewById(R.id.ivReply);
         }
 
-        // Function to bind information to view
         @RequiresApi(api = Build.VERSION_CODES.N) // For getting recommended timestamp function to correct version
+        // Function to bind information to view
         public void bind(Tweet tweet){
             // Set text values for TextViews
             tvTweetText.setText(tweet.body);
             tvName.setText(tweet.user.name);
             tvUserName.setText(tweet.user.userName);
             tvTimeStamp.setText(getRelativeTimeAgo(tweet.createdAt));
+
+            boolean ivLikeButtonState = false;
 
             // Values for rounded corners transformation
             int radius = 30; // corner radius, higher value = more rounded
@@ -135,6 +145,29 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             else {
                 ivTweetImage.setVisibility(View.GONE);
             }
+
+            ivRetweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ComposeActivity.class);
+                    context.startActivity(intent);
+                }
+            });
+
+            ivLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            ivReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ComposeActivity.class);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
