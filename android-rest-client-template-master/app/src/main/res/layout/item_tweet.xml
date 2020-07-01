@@ -7,6 +7,17 @@
     android:layout_margin="5dp">
 
     <ImageView
+        android:id="@+id/ivTweetImage"
+        android:layout_width="400dp"
+        android:layout_height="225dp"
+        android:layout_below="@+id/tvTweetText"
+        android:layout_alignStart="@+id/tvTweetText"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:visibility="visible"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <ImageView
         android:id="@+id/ivProfileImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -20,6 +31,7 @@
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@id/tvTweetText"
         android:layout_alignParentTop="true"
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"

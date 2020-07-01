@@ -1,6 +1,8 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.content.Context;
+import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Define Views within each Tweet
         ImageView ivProfileImage;
+        ImageView ivTweetImage;
         TextView tvTweetText;
         TextView tvUserName;
 
@@ -74,6 +77,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            ivTweetImage =  itemView.findViewById(R.id.ivTweetImage);
             tvTweetText = itemView.findViewById(R.id.tvTweetText);
             tvUserName = itemView.findViewById(R.id.tvUserName);
         }
@@ -88,6 +92,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             Glide.with(context)
                     .load(tweet.user.profileImageUrl)
                     .into(ivProfileImage);
+
+            // Set image for ivTweetImage
+            if(tweet.entities != null) {
+                if (tweet.entities.media != null) {
+                    Log.i("TweetsAdapter", "bind: Attaching tweet image");
+                    Glide.with(context)
+                            .load(tweet.entities.media.get(0).mediaUrl)
+                            .into(ivTweetImage);
+                    Log.i("TweetsAdapter", tweet.entities.media.get(0).mediaUrl);
+
+                    // Set View to VISIBLE in the case that View is GONE (below else-if)
+                    ivTweetImage.setVisibility(View.VISIBLE);
+                }
+            }
+            // If View is Visible and if mediaUrl doesn't exist, set Visibility to GONE
+            else if (ivTweetImage.getVisibility() == View.VISIBLE){
+                ivTweetImage.setVisibility(View.GONE);
+            }
         }
     }
 }

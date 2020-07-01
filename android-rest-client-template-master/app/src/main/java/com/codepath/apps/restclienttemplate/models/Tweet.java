@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,9 @@ public class Tweet {
     public Long userId;
 
     @Ignore
+    public Entities entities;
+
+    @Ignore
     public User user; // The user's User object
 
     public Tweet() {
@@ -46,6 +50,9 @@ public class Tweet {
         User user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.user = user;
         tweet.userId = user.id;
+
+        tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
+
         return tweet;
     }
 

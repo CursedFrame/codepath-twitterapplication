@@ -55,8 +55,23 @@ public class TimelineActivity extends AppCompatActivity {
         client = TwitterApplication.getRestClient(this);
         tweetDao = ((TwitterApplication) getApplicationContext()).getMyDatabase().tweetDao();
 
-        // Used for toolbar manipulation programatically
+        // Used for toolbar manipulation programmatically
         Toolbar bar = findViewById(R.id.tbMain);
+
+        // Setting click listener for toolbar menu
+        bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.composeTweet) {
+                    // Compose icon has been selected
+                    // Navigate to the compose activity
+                    Intent intent = new Intent(getApplicationContext(), ComposeActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // Find SwipeRefreshLayout
         scRefresh = findViewById(R.id.scRefresh);
@@ -116,25 +131,6 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.composeTweet) {
-            // Compose icon has been selected
-            // Navigate to the compose activity
-            Intent intent = new Intent(this, ComposeActivity.class);
-            startActivityForResult(intent, REQUEST_CODE);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
             // Get data from the intent (tweet)
@@ -170,8 +166,6 @@ public class TimelineActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
 
             @Override
