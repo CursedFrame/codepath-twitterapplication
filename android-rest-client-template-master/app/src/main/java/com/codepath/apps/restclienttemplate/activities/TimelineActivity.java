@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
@@ -46,6 +45,7 @@ public class TimelineActivity extends AppCompatActivity {
     TweetsAdapter adapter;
     SwipeRefreshLayout scRefresh;
     EndlessRecyclerViewScrollListener scrollListener;
+    //MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,5 +216,22 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        // Store instance of the menu item containing progress
+//        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+//
+//        // Return to finish
+//        return super.onPrepareOptionsMenu(menu);
+//    }
+//    public void showProgressBar() {
+//        // Show progress item
+//        miActionProgressItem.setVisible(true);
+//    }
+//
+//    public void hideProgressBar() {
+//        // Hide progress item
+//        miActionProgressItem.setVisible(false);
+//    }
 }
 

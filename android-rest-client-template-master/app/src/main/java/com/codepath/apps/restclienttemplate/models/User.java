@@ -36,8 +36,8 @@ public class User {
         User user = new User();
         user.id = jsonObject.getLong("id");
         user.name = jsonObject.getString("name");
-        user.userName = jsonObject.getString("screen_name");
-        user.profileImageUrl= jsonObject.getString("profile_image_url_https");
+        user.userName = "@" + jsonObject.getString("screen_name");
+        user.profileImageUrl= jsonObject.getString("profile_image_url_https").replace("_normal", "");
         return user;
     }
 

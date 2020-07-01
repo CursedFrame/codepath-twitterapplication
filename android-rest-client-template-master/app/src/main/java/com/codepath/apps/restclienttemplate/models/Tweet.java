@@ -5,7 +5,6 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +43,7 @@ public class Tweet {
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
-        tweet.body = jsonObject.getString("text");
+        tweet.body = jsonObject.getString("full_text");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.id = jsonObject.getLong("id");
         User user = User.fromJson(jsonObject.getJSONObject("user"));
