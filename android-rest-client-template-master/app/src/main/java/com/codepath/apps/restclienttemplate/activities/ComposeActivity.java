@@ -19,6 +19,8 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
+import java.util.Objects;
+
 import okhttp3.Headers;
 
 public class ComposeActivity extends AppCompatActivity {
@@ -41,6 +43,20 @@ public class ComposeActivity extends AppCompatActivity {
         etComposeTweet = findViewById(R.id.etComposeTweet);
         btnTweet = findViewById(R.id.btnTweet);
 
+        Intent intent = getIntent();
+
+        if (Objects.requireNonNull(intent.getExtras()).getBoolean("retweetTrigger")) {
+            String retweet = intent.getExtras().getString("retweet");
+            Log.i(TAG, "onClick: " + retweet);
+            etComposeTweet.setText(retweet);
+        }
+
+        if (intent.getExtras().getBoolean("replyTrigger")) {
+            String reply = intent.getExtras().getString("reply");
+            Log.i(TAG, "onClick: " + reply);
+            etComposeTweet.setText(reply);
+        }
+
         etComposeTweet.requestFocus();
 
         // Set click listener on button
@@ -48,6 +64,7 @@ public class ComposeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String tweetContent = etComposeTweet.getText().toString();
+
                 if (tweetContent.isEmpty()){
                     Toast.makeText(ComposeActivity.this, "Sorry, your tweet cannot be empty.", Toast.LENGTH_LONG).show();
                     return;

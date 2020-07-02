@@ -19,21 +19,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.activities.ComposeActivity;
+import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Locale;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import okhttp3.Headers;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
+
+    public static final String TAG = "TweetsAdapter";
+
     Context context;
     List<Tweet> tweets;
+    TwitterClient client;
 
     // Pass in the context and list of tweets
-    public TweetsAdapter(Context context, List<Tweet> tweets) {
+    public TweetsAdapter(Context context, List<Tweet> tweets, TwitterClient client) {
         this.context = context;
         this.tweets = tweets;
+        this.client = client;
     }
 
     // For each row, inflate the layout
@@ -105,14 +117,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         @RequiresApi(api = Build.VERSION_CODES.N) // For getting recommended timestamp function to correct version
         // Function to bind information to view
-        public void bind(Tweet tweet){
+        public void bind(final Tweet tweet){
+
             // Set text values for TextViews
             tvTweetText.setText(tweet.body);
             tvName.setText(tweet.user.name);
             tvUserName.setText(tweet.user.userName);
             tvTimeStamp.setText(getRelativeTimeAgo(tweet.createdAt));
-
-            boolean ivLikeButtonState = false;
 
             // Values for rounded corners transformation
             int radius = 30; // corner radius, higher value = more rounded
@@ -127,7 +138,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             // Set image for ivTweetImage
             if(tweet.entities != null) {
                 if (tweet.entities.media != null) {
-                    Log.i("TweetsAdapter", "bind: Attaching tweet image");
+                    Log.i(TAG, "bind: Attaching tweet image");
 
                     // Input and transform image through Glide
                     Glide.with(context)
@@ -135,7 +146,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                             .transform(new RoundedCornersTransformation(radius, margin))
                             .into(ivTweetImage);
 
-                    Log.i("TweetsAdapter", "URL:" + tweet.entities.media.get(0).mediaUrl);
+                    Log.i(TAG, "URL:" + tweet.entities.media.get(0).mediaUrl);
 
                     // Set View to VISIBLE in the case that View is GONE (below else-if)
                     ivTweetImage.setVisibility(View.VISIBLE);
@@ -146,18 +157,79 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivTweetImage.setVisibility(View.GONE);
             }
 
+            // Set image for ivLike
+            if (tweet.favorited){
+                ivLike.setImageResource(R.drawable.ic_vector_heart);
+            }
+            else {
+                ivLike.setImageResource(R.drawable.ic_vector_heart_stroke);
+            }
+
             ivRetweet.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ComposeActivity.class);
+                    intent.putExtra("retweet", "RT @" + tweet.user.name + ": ");
+                    intent.putExtra("retweetTrigger", true);
                     context.startActivity(intent);
                 }
             });
 
+            // Setting like functionality for tweet
             ivLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                   if (!tweet.favorited){
+                       // Execute API call for liking
+                       client.favoriteTweet(tweet.id, new JsonHttpResponseHandler() {
+                           @Override
+                           public void onSuccess(int statusCode, Headers headers, JSON json) {
+                              // ivLike.setImageResource(R.drawable.ic_vector_heart);
+                               ((TimelineActivity)context).populateHomeTimeline();
+                           }
 
+                           @Override
+                           public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                               Log.e(TAG, "onFailure to like",  throwable);
+                           }
+                       });
+
+                   }
+                   else {
+                       // Execute API call for unliking
+                       client.unfavoriteTweet(tweet.id, new JsonHttpResponseHandler() {
+                           @Override
+                           public void onSuccess(int statusCode, Headers headers, JSON json) {
+                              // ivLike.setImageResource(R.drawable.ic_vector_heart_stroke);
+                               ((TimelineActivity)context).populateHomeTimeline();
+                           }
+
+                           @Override
+                           public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                               Log.e(TAG, "onFailure to unlike",  throwable);
+                           }
+                       });
+                   }
+
+                    // After liking, execute API call to return tweet and update tweet.favorited
+                    client.showTweet(tweet.id, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            JSONObject jsonObject = json.jsonObject;
+
+                            try {
+                                tweet.favorited = jsonObject.getBoolean("favorited");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            Log.e(TAG, "onFailure to update tweet.favorited",  throwable);
+                        }
+                    });
+                   Log.i("TweetsAdapter: ", "onClick: " + ivLike);
                 }
             });
 
@@ -165,6 +237,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, ComposeActivity.class);
+                    intent.putExtra("reply", "@" + tweet.user.name + ": ");
+                    intent.putExtra("replyTrigger", true);
                     context.startActivity(intent);
                 }
             });

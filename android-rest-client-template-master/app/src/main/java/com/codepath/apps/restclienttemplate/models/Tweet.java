@@ -31,6 +31,9 @@ public class Tweet {
     @ColumnInfo
     public Long userId;
 
+    @ColumnInfo
+    public boolean favorited;
+
     @Ignore
     public Entities entities;
 
@@ -49,6 +52,7 @@ public class Tweet {
         User user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.user = user;
         tweet.userId = user.id;
+        tweet.favorited = jsonObject.getBoolean("favorited");
 
         tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
 

@@ -100,7 +100,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Init the list of tweets and adapter
         tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets);
+        adapter = new TweetsAdapter(this, tweets, client);
 
         // Init LinearLayoutManager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -132,6 +132,7 @@ public class TimelineActivity extends AppCompatActivity {
                 adapter.addAll(tweetsFromDB);
             }
         });
+
         populateHomeTimeline();
     }
 
@@ -178,11 +179,9 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure for loadMoreData", throwable);
             }
         }, tweets.get(tweets.size() - 1).id);
-
-
     }
 
-    private void populateHomeTimeline() {
+    public void populateHomeTimeline() {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -221,22 +220,5 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        // Store instance of the menu item containing progress
-//        miActionProgressItem = menu.findItem(R.id.miActionProgress);
-//
-//        // Return to finish
-//        return super.onPrepareOptionsMenu(menu);
-//    }
-//    public void showProgressBar() {
-//        // Show progress item
-//        miActionProgressItem.setVisible(true);
-//    }
-//
-//    public void hideProgressBar() {
-//        // Hide progress item
-//        miActionProgressItem.setVisible(false);
-//    }
 }
 
