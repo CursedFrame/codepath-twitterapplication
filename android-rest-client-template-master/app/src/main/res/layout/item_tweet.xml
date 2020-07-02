@@ -6,6 +6,32 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp">
 
+    <TextView
+        android:id="@+id/tvRetweetCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivTweetImage"
+        android:layout_alignBottom="@id/ivRetweet"
+        android:layout_alignParentBottom="false"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/ivRetweet"
+        tools:text="12" />
+
+    <TextView
+        android:id="@+id/tvFavoriteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivTweetImage"
+        android:layout_alignBottom="@id/ivLike"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="23dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@+id/ivLike"
+        tools:text="12" />
+
     <ImageView
         android:id="@+id/ivRetweet"
         android:layout_width="27dp"
@@ -96,7 +122,7 @@
         android:layout_below="@+id/ivTweetImage"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="false"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="26dp"
         tools:text="3 min. ago" />
 

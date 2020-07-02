@@ -19,8 +19,6 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
-import java.util.Objects;
-
 import okhttp3.Headers;
 
 public class ComposeActivity extends AppCompatActivity {
@@ -44,12 +42,6 @@ public class ComposeActivity extends AppCompatActivity {
         btnTweet = findViewById(R.id.btnTweet);
 
         Intent intent = getIntent();
-
-        if (Objects.requireNonNull(intent.getExtras()).getBoolean("retweetTrigger")) {
-            String retweet = intent.getExtras().getString("retweet");
-            Log.i(TAG, "onClick: " + retweet);
-            etComposeTweet.setText(retweet);
-        }
 
         if (intent.getExtras().getBoolean("replyTrigger")) {
             String reply = intent.getExtras().getString("reply");

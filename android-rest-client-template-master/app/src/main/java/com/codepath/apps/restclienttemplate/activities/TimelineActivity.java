@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -46,6 +48,7 @@ public class TimelineActivity extends AppCompatActivity {
     TweetsAdapter adapter;
     SwipeRefreshLayout scRefresh;
     EndlessRecyclerViewScrollListener scrollListener;
+    FragmentManager fragmentManager;
     //MenuItem miActionProgressItem;
 
     @Override
@@ -55,6 +58,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         client = TwitterApplication.getRestClient(this);
         tweetDao = ((TwitterApplication) getApplicationContext()).getMyDatabase().tweetDao();
+        fragmentManager = getSupportFragmentManager();
 
         // Used for toolbar manipulation programmatically
         Toolbar bar = findViewById(R.id.tbMain);
@@ -100,7 +104,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         // Init the list of tweets and adapter
         tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets, client);
+        adapter = new TweetsAdapter(this, tweets, client, fragmentManager);
 
         // Init LinearLayoutManager
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -208,6 +212,36 @@ public class TimelineActivity extends AppCompatActivity {
                             tweetDao.insertModel(tweetsFromNetwork.toArray(new Tweet[0]));
                         }
                     });
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json exception", e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure " + response, throwable);
+            }
+        });
+    }
+
+
+
+    public void populateSingleTweet(final Tweet tweet, final int adapterPosition) {
+
+        long tweetId = tweet.id;
+
+        client.showTweet(tweetId, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess" + json.toString());
+                JSONObject jsonObject = json.jsonObject;
+               try {
+                   Tweet newTweet = Tweet.fromJson(jsonObject);
+                    tweets.remove(adapterPosition);
+                    tweets.add(adapterPosition, newTweet);
+                    adapter.notifyItemChanged(adapterPosition);
+
                 } catch (JSONException e) {
                     Log.e(TAG, "Json exception", e);
                     e.printStackTrace();

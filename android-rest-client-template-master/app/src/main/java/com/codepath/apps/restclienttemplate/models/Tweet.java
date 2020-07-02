@@ -34,6 +34,15 @@ public class Tweet {
     @ColumnInfo
     public boolean favorited;
 
+    @ColumnInfo
+    public String favoriteCount;
+
+    @ColumnInfo
+    public boolean retweeted;
+
+    @ColumnInfo
+    public String retweetCount;
+
     @Ignore
     public Entities entities;
 
@@ -46,13 +55,18 @@ public class Tweet {
 
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
+
         tweet.body = jsonObject.getString("full_text");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.id = jsonObject.getLong("id");
+        tweet.favorited = jsonObject.getBoolean("favorited");
+        tweet.favoriteCount = jsonObject.getString("favorite_count");
+        tweet.retweeted = jsonObject.getBoolean("retweeted");
+        tweet.retweetCount = jsonObject.getString("retweet_count");
+
         User user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.user = user;
         tweet.userId = user.id;
-        tweet.favorited = jsonObject.getBoolean("favorited");
 
         tweet.entities = Entities.fromJson(jsonObject.getJSONObject("entities"));
 
