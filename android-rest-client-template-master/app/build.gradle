@@ -37,6 +37,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 ext {
     appCompatVersion = '1.0.0'

@@ -1,7 +1,6 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.content.Context;
-import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.net.ParseException;
 import android.os.Build;
@@ -21,9 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterClient;
-import com.codepath.apps.restclienttemplate.activities.ComposeActivity;
 import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
-import com.codepath.apps.restclienttemplate.fragments.TweetDialogFragment;
+import com.codepath.apps.restclienttemplate.databinding.ItemTweetBinding;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONException;
@@ -56,7 +54,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
+
+        ItemTweetBinding TweetBinding = ItemTweetBinding.inflate(LayoutInflater.from(context));
+
+        View view = TweetBinding.getRoot();
+        //View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
         return new ViewHolder(view);
     }
 
@@ -121,13 +123,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivReply = itemView.findViewById(R.id.ivReply);
             tvFavoriteCount = itemView.findViewById(R.id.tvFavoriteCount);
             tvRetweetCount = itemView.findViewById(R.id.tvRetweetCount);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showTweetDialog();
-                }
-            });
         }
 
         @RequiresApi(api = Build.VERSION_CODES.N) // For getting recommended timestamp function to correct version
@@ -299,10 +294,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, ComposeActivity.class);
-                    intent.putExtra("reply", "@" + tweet.user.name + ": ");
-                    intent.putExtra("tweetId", tweet.id);
-                    context.startActivity(intent);
+                    String reply = tweet.user.userName + ": ";
+                    ((TimelineActivity)context).showComposeReplyDialog(reply, tweet.id);
                 }
             });
         }
@@ -346,9 +339,4 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         }
         return twitterTimeStamp;
     }
-    private void showTweetDialog() {
-        TweetDialogFragment tweetDialogFragment = TweetDialogFragment.newInstance("Some Title");
-        tweetDialogFragment.show(fragmentManager, "fragment_tweet");
-    }
-
 }

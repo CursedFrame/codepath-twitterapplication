@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApplication;
 import com.codepath.apps.restclienttemplate.TwitterClient;
+import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
+import com.codepath.apps.restclienttemplate.fragments.TweetFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.TweetDao;
 import com.codepath.apps.restclienttemplate.models.TweetWithUser;
@@ -36,10 +39,11 @@ import java.util.List;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements TweetFragment.TweetFragmentListener {
 
     public static final String TAG = "TimelineActivity";
     private final int  REQUEST_CODE = 20;
+
 
     TweetDao tweetDao;
     TwitterClient client;
@@ -49,19 +53,24 @@ public class TimelineActivity extends AppCompatActivity {
     SwipeRefreshLayout scRefresh;
     EndlessRecyclerViewScrollListener scrollListener;
     FragmentManager fragmentManager;
-    //MenuItem miActionProgressItem;
+    TweetFragment tweetFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timeline);
+
+        // For decreasing View Boilerplating
+        ActivityTimelineBinding TimelineBinding = ActivityTimelineBinding.inflate(getLayoutInflater());
+        View view = TimelineBinding.getRoot();
+        setContentView(view);
 
         client = TwitterApplication.getRestClient(this);
         tweetDao = ((TwitterApplication) getApplicationContext()).getMyDatabase().tweetDao();
         fragmentManager = getSupportFragmentManager();
 
         // Used for toolbar manipulation programmatically
-        Toolbar bar = findViewById(R.id.tbMain);
+        Toolbar bar = TimelineBinding.tbMain;
 
         // Setting click listener for toolbar menu
         bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -69,9 +78,8 @@ public class TimelineActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.composeTweet) {
                     // Compose icon has been selected
-                    // Navigate to the compose activity
-                    Intent intent = new Intent(getApplicationContext(), ComposeActivity.class);
-                    startActivityForResult(intent, REQUEST_CODE);
+                    // Navigate to the compose fragment
+                    showComposeTweetDialog();
                     return true;
                 }
                 return false;
@@ -79,7 +87,7 @@ public class TimelineActivity extends AppCompatActivity {
         });
 
         // Find SwipeRefreshLayout
-        scRefresh = findViewById(R.id.scRefresh);
+        scRefresh = TimelineBinding.scRefresh;
 
         // Configure the refreshing colors
         scRefresh.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -96,7 +104,7 @@ public class TimelineActivity extends AppCompatActivity {
         });
 
         // Find the recycler view
-        rvTweets = findViewById(R.id.rvTweets);
+        rvTweets = TimelineBinding.rvTweets;
 
         // Adds divider to RecyclerView to divide tweets
         rvTweets.addItemDecoration(new DividerItemDecoration(this,
@@ -137,6 +145,8 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
 
+        // Finding fragment for Interface data transfer
+        tweetFragment = (TweetFragment) getSupportFragmentManager().findFragmentById(R.id.compose_tweet_fragment);
         populateHomeTimeline();
     }
 
@@ -217,15 +227,12 @@ public class TimelineActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "onFailure " + response, throwable);
             }
         });
     }
-
-
 
     public void populateSingleTweet(final Tweet tweet, final int adapterPosition) {
 
@@ -253,6 +260,27 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e(TAG, "onFailure " + response, throwable);
             }
         });
+    }
+
+    public void showComposeTweetDialog() {
+        TweetFragment tweetFragment = TweetFragment.newInstance("");
+        tweetFragment.show(fragmentManager, "fragment_compose_tweet");
+    }
+
+    public void showComposeReplyDialog(String replyHandle, long tweetReplyId) {
+        TweetFragment tweetFragment = TweetFragment.newInstance("", replyHandle, tweetReplyId);
+        tweetFragment.show(fragmentManager, "fragment_compose_tweet");
+    }
+
+    @Override
+    public void onFinishedTweet(Tweet tweet) {
+        // Update the RecyclerView with the tweet
+        // Modify data source of tweets
+        tweets.add(0, tweet);
+        Log.i(TAG, "Publish tweet working"+ tweet);
+        // Update the adapter
+        adapter.notifyItemChanged(0);
+        rvTweets.smoothScrollToPosition(0);
     }
 }
 
