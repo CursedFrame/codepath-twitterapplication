@@ -119,7 +119,7 @@ public class TweetFragment extends DialogFragment {
                 Toast.makeText(getActivity(), tweetContent, Toast.LENGTH_LONG).show();
 
                 // Make an API call to Twitter to publish the tweet
-                if (tweetReplyId != 0) {
+                if (tweetReplyId == 0) {
                     client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Headers headers, JSON json) {
