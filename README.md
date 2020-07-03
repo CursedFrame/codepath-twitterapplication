@@ -43,10 +43,12 @@ The following **stretch** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-Original Walkthrough
+Original Walkthrough:
+
 ![App Demo Link](android-rest-client-template-master/screenshots/twitter_app.gif)
 
-Extra Walkthrough to Show Compose Tweet
+Extra Walkthrough to Show Compose Tweet:
+
 ![App Demo Link](android-rest-client-template-master/screenshots/twitter_app_compose_tweet.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
