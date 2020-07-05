@@ -294,7 +294,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String reply = tweet.user.userName + ": ";
+                    String reply = tweet.user.userName + " ";
                     ((TimelineActivity)context).showComposeReplyDialog(reply, tweet.id);
                 }
             });

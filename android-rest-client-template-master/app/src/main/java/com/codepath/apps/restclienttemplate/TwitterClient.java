@@ -80,10 +80,12 @@ public class TwitterClient extends OAuthBaseClient {
 
 	public void publishReplyTweet(String tweetContent, long tweetId, JsonHttpResponseHandler handler) {
 		// Path for Twitter user home timeline
-		String apiUrl = getApiUrl("statuses/update/.json");
+		String apiUrl = getApiUrl("statuses/update.json");
 
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
+		params.put("status", tweetContent);
+		params.put("tweet_mode", "extended");
 		params.put("in_reply_to_status_id", tweetId);
 		client.post(apiUrl, params,"", handler);
 	}
